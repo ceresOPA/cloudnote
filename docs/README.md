@@ -5,3 +5,8 @@
 
 
 ?> 之后笔记写多了后，应该会在这下面加一些帮助导航吧，目前仅作个人笔记堆积处，要是以后自己笔记有机会帮助到别人那就再好不过了
+
+学习网站：
+
+- [git学习](https://learngitbranching.js.org/?locale=zh_CN) 
+- [SQL学习](http://xuesql.cn/)
