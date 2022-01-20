@@ -1,1 +1,0 @@
-* [SQL](/data-analysis/sql/)
