@@ -27,7 +27,7 @@ FROM mytable
 7. order by：排序（已经过select的计算后，可使用**col_name**的as的别名，之前都不能使用as别名）**table是可以使用别名的**:imp:
 8. limit/offset：截取部分数据
 
-
+!> 这里补充一下关于执行顺序的问题，因为在牛客刷SQL中发现group by中竟然可以使用列的别名，然后看到讨论区给出的理由是：**因为MySQL对查询做了增强没有严格遵循SQL的执行顺序，where后面不能用select中的别名，但是group by ，order by都是可以的，Oracle数据库严格遵循了SQL执行顺序在Oracle里group by是不能引用select里的别名的。**
 
 ## 基础篇
 
@@ -200,14 +200,133 @@ select username,gender,age from users where gender like "female" and age>20;
 -- 当然也可以使用OR来实现该查询
 ```
 
+#### 关于UNION ALL的使用（避免去重）
+
+union的默认操作其实就类似or，当满足两个条件的时候，则会自动进行去重只保留一条记录，但某些情况下可能并不希望他去重，那么就需要使用到union all，来避免自动去重。【习题可以参考：[牛客SQL25](https://www.nowcoder.com/practice/979b1a5a16d44afaba5191b22152f64a?tpId=199&tags=&title=&difficulty=0&judgeStatus=0&rp=0)】
+
+```sql
+select device_id,gender,age,gpa from user_profile where university like "山东大学" union all
+select device_id,gender,age,gpa from user_profile where gender like "male";
+```
+
+### 多表的连接
+
+多表的连接，其实与两个表的连接是类似的，只需在后面再join就可以了
+
+```sql
+-- 这下面是两个左连接
+select university,difficult_level,round(count(*)/count(distinct q.device_id),4) as avg_answer_cnt
+from question_practice_detail q
+left join user_profile u on q.device_id = u.device_id
+left join question_detail qu on q.question_id = qu.question_id
+where university like "山东大学"
+group by university,difficult_level
+```
+
+
+
 ### 常用函数
 
-| 函数                     | 作用                                                         |
-| ------------------------ | ------------------------------------------------------------ |
-| ROUND(col_name,保留位数) | select round(gpa,1) from user_profile<br/>-- gpa保留1位小数  |
-| MAX(col_name)            | select max(gpa) from user_profile<br/>-- 查询gpa最大的记录   |
-| AVG(col_name)            | select avg(gpa) from user_profile<br/>-- 求出所有用户的平均gpa |
-| SUM(col_name)            | select sum(gpa) from user_profile<br/>-- 求出所有用户的gpa总和 |
+#### 数值函数
+
+| 函数                               | 作用                                                         |
+| ---------------------------------- | ------------------------------------------------------------ |
+| ROUND(col_name,四舍五入保留位数)   | select round(gpa,1) from user_profile<br/>-- gpa保留1位小数  |
+| TRUNK(col_name,保留小数位数)       | select trunk(gpa,1) from user_profile<br/>-- trunk是直接截断，如3.1415，保留3位，则直接去掉5 |
+| CEILING(col_nam) / FLOOR(col_name) | 向上/向下取整函数                                            |
+| ABS(col_name)                      | 绝对值函数                                                   |
+| RAND()                             | 随机数0-1                                                    |
+| MAX(col_name)                      | select max(gpa) from user_profile<br/>-- 查询gpa最大的记录   |
+| AVG(col_name)                      | select avg(gpa) from user_profile<br/>-- 求出所有用户的平均gpa |
+| SUM(col_name)                      | select sum(gpa) from user_profile<br/>-- 求出所有用户的gpa总和 |
+
+#### 字符函数
+
+| 函数                                                 | 作用                                       |
+| ---------------------------------------------------- | ------------------------------------------ |
+| LENGTH()                                             | 返回字符串的长度                           |
+| UPPER() / LOWER()                                    | 全部大写或小写                             |
+| LTRIM() / RTRIM() / TRIM()                           | 去除左空格/右空格/全部空格                 |
+| LEFT(“string”,左侧多少个字符)                        | left("string",3)<br />--- 输出 str         |
+| RIGHT("string",右侧多少个字符)                       | right("string",3)<br />--- 输出 ing        |
+| SUBSTRING("string",起始字符位置，结束字符位置[可选]) | substring("string",2,5)<br />--- 输出trin  |
+| LOCATE(子串,字符串)                                  | 返回子串第一次出现的位置                   |
+| REPLACE(字符串，内容，替换内容)                      |                                            |
+| CONCAT(连接多个字符串)                               | concat(str1,str2,str3)                     |
+| substring_index(str,delim,count)                     | str:要处理的字符串 delim:分隔符 count:计数 |
+
+
+
+#### 日期函数
+
+| 函数                                        | 作用                          |
+| ------------------------------------------- | ----------------------------- |
+| NOW()                                       | 返回类似：2022-01-21 16:40:24 |
+| CURDATE()                                   | 返回类似：2022-01-21          |
+| CURTIME()                                   | 返回类似：16:40:24            |
+| YEAR(NOW())                                 | 返回类似：2022                |
+| MONTH(NOW())                                | 返回类似：1                   |
+| 同类的还有DAY()、HOUR()、MINUTE()、SECOND() | 天、时、分、秒                |
+
+
+
+#### 特殊函数
+
+| 函数                                   | 作用                                                         |
+| -------------------------------------- | ------------------------------------------------------------ |
+| IFNULL(col_name,"替换内容")            | select IFNULL(age,"未知") from users <br/>-- 用于表示如果age为空，则替换为未知 |
+| COALESCE(col_name,col_name,"替换内容") | 从左往右，返回第一个不为空的内容                             |
+
+#### IF与CASE的使用
+
+- IF函数
+
+```sql
+select IF(age>=25,"25岁及以上","25岁以下") as age_cut from user_profile
+```
+
+IF(条件，为真返回的值，为假返回的值)    和Excel有点像。
+
+- CASE函数
+
+```sql
+select device_id,gender,
+CASE
+    WHEN age <20 THEN "20以下"
+    WHEN age between 20 and 24 THEN "20-24岁"
+    WHEN age >=25 THEN "25岁及以上"
+    ELSE "其他"
+END AS age_cut
+from user_profile;
+```
+
+注意下格式：
+
+```sql
+CASE
+	WHEN ... THEN ...
+	...
+	ELSE ...
+END AS ...
+```
+
+
+
+### count的计数问题
+
+count()函数，按照之前设想的是如果有count(result="true")，则会统计的应该是result="true"的字段，但是会发现并没有正常统计，因为count()函数不会统计的值是null，所以这里要写成count(case when result="true" then 1 else null end)才会达到想要的效果，或者用if也可以count(IF(result="true",1,null))
+
+
+
+### 多排序的设置
+
+和group by类似，order by后面也可以接不止一个字段，如order by filed1,filed2，用于表示先按照filed1字段升序，再按照filed2字段升序，这里默认都是asc升序，关于使用asc升序还是desc降序都是可以单独设置的
+
+```sql
+select device_id,gpa,age from user_profile
+order by gpa desc,age desc;
+-- 这里分别将两个设置为降序，如果不设置，则默认是升序asc
+```
 
 
 
@@ -215,9 +334,9 @@ select username,gender,age from users where gender like "female" and age>20;
 
 ## 问题篇
 
-1. **按角色分组算出每个角色按有办公室和没办公室的统计人数(列出角色，数量，有无办公室,注意一个角色如果部分有办公室，部分没有需分开统计）**
+**一、按角色分组算出每个角色按有办公室和没办公室的统计人数(列出角色，数量，有无办公室,注意一个角色如果部分有办公室，部分没有需分开统计）**
 
-   【题目链接：http://xuesql.cn/lesson/select_queries_with_aggregates_pt_2】
+【题目链接：http://xuesql.cn/lesson/select_queries_with_aggregates_pt_2】
 
 ![image-20220120142522481](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220120142522481.png)
 
@@ -254,9 +373,13 @@ select username,gender,age from users where gender like "female" and age>20;
   FROM employees where 1 group by role,有无办公室
   ```
 
-2. **SQL21** **浙江大学用户题目回答情况**
 
-   【题目链接：[牛客基础SQL21](https://www.nowcoder.com/practice/55f3d94c3f4d47b69833b335867c06c1?tpId=199&tags=&title=&difficulty=0&judgeStatus=0&rp=0)】
+
+
+
+**二、SQL21** **浙江大学用户题目回答情况**
+
+【题目链接：[牛客基础SQL21](https://www.nowcoder.com/practice/55f3d94c3f4d47b69833b335867c06c1?tpId=199&tags=&title=&difficulty=0&judgeStatus=0&rp=0)】
 
 - 思路：题目本身不难，先表连接，然后再筛洗就可以得到结果。但是，从讨论中看到另外一种解法，是在where中使用到了device_id相等的条件。不过主要还是不怎么理解f**rom两个表后得到的是什么样的一个临时表**。
 - **补充：**<font color="red" >select * from table_A,table_B; 其实就是对table_A和table_B进行内连接</font>
@@ -278,6 +401,40 @@ where university = '浙江大学'and q.device_id=u.device_id
 ```
 
 
+
+
+
+**三、mysql使用group by查询报错SELECT list is not in GROUP BY clause and contains nonaggregated column...解决方案**
+
+【题目链接：[牛客SQL24](https://www.nowcoder.com/practice/f4714f7529404679b7f8909c96299ac4?tpId=199&tags=&title=&difficulty=0&judgeStatus=0&rp=0)】
+
+- 思路：这里题目要求是查询**参加了答题**的**山东大学**的用户在**不同难度**下的**平均答题题目数**，所以，这里一开始是容易想到的通过将答题表和用户表与答题详情表进行左连接，然后通过where筛选出只有山东大学的用户，再通过对学校和难度进行group by。
+
+  不过，这里在进行group by的时候，我就在想既然既然经过了where筛选后，那不就只有山东大学的用户吗？那不就只需要对难度进行分组，不需要再对学校进行分组了，就只有group by difficult_level，结果就报出了上面的错误，根据查询了解到说是mysql5.7.5后使用了only_full_group_by作为默认的sql_mode，不过这个语句确实是存在问题的，**因为若表中有不同的学校相同的题目难度的记录，那group by difficult_level后，select university是没有知道是哪个大学的。**
+
+- 正解：
+
+```sql
+select university,difficult_level,round(count(*)/count(distinct q.device_id),4) as avg_answer_cnt
+from question_practice_detail q
+left join user_profile u on q.device_id = u.device_id
+left join question_detail qu on q.question_id = qu.question_id
+where university like "山东大学"
+group by university,difficult_level;
+```
+
+- 另解（<font color="orange">突然想到，用having也可以解决</font>）：
+
+```sql
+select university,difficult_level,round(count(*)/count(distinct q.device_id),4) as avg_answer_cnt
+from question_practice_detail q
+left join user_profile u on q.device_id = u.device_id
+left join question_detail qu on q.question_id = qu.question_id
+group by university,difficult_level
+having university like "山东大学"
+```
+
+- 关于only_full_group_by参考资料：https://blog.csdn.net/study_in/article/details/92625397
 
 
 
