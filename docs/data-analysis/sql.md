@@ -2,17 +2,52 @@
 
 > 学习资源：[自学SQL网](http://xuesql.cn/)
 
+?> 各语句写的顺序：
+
+```sql
+SELECT DISTINCT column, AGG_FUNC(column_or_expression), …
+FROM mytable
+    JOIN another_table
+      ON mytable.column = another_table.column
+    WHERE constraint_expression
+    GROUP BY column
+    HAVING constraint_expression
+    ORDER BY column ASC/DESC
+    LIMIT count OFFSET COUNT;
+```
+
+?> 各语句执行顺序：
+
+1. from和join：确定一个数据源表(临时表)
+2. where：对数据源进行筛选
+3. group by：分组
+4. having：分组后的数据进行筛选
+5. select：确定输出
+6. distinct：排重
+7. order by：排序（已经过select的计算后，可使用**col_name**的as的别名，之前都不能使用as别名）**table是可以使用别名的**:imp:
+8. limit/offset：截取部分数据
 
 
-## SQL条件查询
 
-### 1. 使用WHERE语句筛选数字类型的属性
+## 基础篇
+
+### SQL条件查询
+
+#### 1. 使用WHERE语句筛选数字类型的属性
 
 > 把不太熟悉的sql条件查询的语句记一下，之前除了=、!=这种常用的，很少用到下面的四种
 
 <img src="https://gitee.com/y255413580/img/raw/master/noteimg/image-20220118220927157.png" alt="image-20220118220927157" style="zoom: 50%;" />
 
-### 2. 字符串相关筛选
+?> 这里注意下，BETWEEN...AND...，是包含两侧的值的，如
+
+```sql
+between 20 and 23 --是包括20和23的
+```
+
+
+
+#### 2. 字符串相关筛选
 
 <img src="https://gitee.com/y255413580/img/raw/master/noteimg/image-20220118223539058.png" alt="image-20220118223539058" style="zoom:50%;" />
 
@@ -25,9 +60,9 @@ select * from movies where lower(title) like "%string%";
 
 
 
-## SQL筛选与排序
+### SQL筛选与排序
 
-### 1. distinct 与 group by
+#### 1. distinct 与 group by
 
 !> 目前关于具体的区别还没有很清楚，后续更新
 
@@ -47,7 +82,7 @@ group by building_name,role;
 -- 执行上面的语句后，会先按建筑分组，然后再对同一建筑内的不同角色进行分组
 ```
 
-### 2. 排序(order by)
+#### 2. 排序(order by)
 
 ?> order by col_name(asc/desc), 根据某一列进行排序<br />数值类型的列：直接按照数值大小排序（asc：9 8 7... ；desc：1 2 3...）<br />字符类型的列：按照字母表的顺序进行排序
 
@@ -55,7 +90,9 @@ group by building_name,role;
 select * from movies order by id asc; --默认是asc升序
 ```
 
-### 3. 筛选(limit  ; offset)
+#### 3. 筛选(limit  ; offset)
+
+?> 可以用于某些情况下的分页查询，避免一次性查询大量数据
 
 | 语句   | 功能                                                         |
 | ------ | ------------------------------------------------------------ |
@@ -72,7 +109,39 @@ limit 5 offset 5;
 
 
 
-## 关键字NULL的使用
+### 多表的连接
+
+#### 1. 内连接(inner join)
+
+- inner join，也可直接简写为join，相当于两表的交集（如A和B，则为A∩B）
+- 图示（A∩B）：![AB](https://gitee.com/y255413580/img/raw/master/noteimg/AB.png)
+
+- 作用：通过内连接得到的新表只要原来的表不存在null，则不会产生新的null。但显然，因为是交集，所以没有匹配的记录会直接被丢弃。
+- 语句：
+
+```sql
+select * from table_A inner join table_B
+on table_A.id = table_B.A_id
+```
+
+#### 2. 外连接(outer join)
+
+- outer join，分为三种——left outer join(左外连接)、right outer join(右外连接)和full outer join(全连接)，都可以将outer简写掉，直接为left join,right join和full join。
+- 图示：
+  - left join（A-B）  ：![A-B](https://gitee.com/y255413580/img/raw/master/noteimg/A-B.png)
+  - right join（B-A）：![B-A](https://gitee.com/y255413580/img/raw/master/noteimg/B-A.png)
+  - full join（A∪B）：![A∪B](https://gitee.com/y255413580/img/raw/master/noteimg/A%E2%88%AAB.png)
+- 作用：这三种外连接，都有可能导致null的出现，对于左连接，会保留A表的所有记录，则会导致没有与B表对应的该条记录的B的字段值为null，另外两种类似。
+- 语句：
+
+```sql
+select * from table_A left/right/full join table_B
+on table_A.id = table_B.A_id
+```
+
+
+
+### 关键字NULL的使用
 
 数据库中null的出现经常是不可避免的，我们可以通过is null 或 is not null的方式对存在null值字段的表进行筛选。
 
@@ -86,4 +155,129 @@ AND/OR …;
 ```
 
 ?> 有的时候也可以**在建表的时候给某些不愿出现null的字段设置默认值**，如数值型的某些字段可以设置默认值为0，字符串型的可以设置为""，当然这并不唯一，要结合具体情形具体分析。
+
+
+
+### sql查询中的表达式
+
+?> 在查询的列和where语句中的列都是可以使用表达式的，且表达式不限于普通的+-*/，一些数据库也提供了一些函数以供调用，如count()，str()等函数
+
+```sql
+-- 包含表达式的例子
+SELECT  particle_speed / 2.0 AS half_particle_speed -- (对结果做了一个除2）
+FROM physics_data
+WHERE ABS(particle_position) * 10.0 >500;
+            --（条件要求这个属性绝对值乘以10大于500）
+```
+
+
+
+### 分组后的条件查询(HAVING)
+
+因为where语句的执行在group by之前，即是对表进行筛选后再进行的分组。因此，若想在分组后再对各组进行筛选则是无法通过where语句来是实现的，此时就需要使用到HAVING语句。
+
+语句：
+
+```sql
+select role,count(*) from officer
+group by role
+having role like "Engineer"
+-- 用于查询角色为Engineer的人数，即先按角色分组，再筛选出角色为Engineer的记录
+```
+
+
+
+## 进阶篇
+
+### Union操作
+
+?> 通过union操作，可以实现在有相同字段的多条记录的合并操作，可以认为是增加行
+
+```sql
+select username,gender,age from users where gender like "male" and age>22 union
+select username,gender,age from users where gender like "female" and age>20;
+-- 查找男性大于22岁的或者女性大于20岁的用户
+-- 当然也可以使用OR来实现该查询
+```
+
+### 常用函数
+
+| 函数                     | 作用                                                         |
+| ------------------------ | ------------------------------------------------------------ |
+| ROUND(col_name,保留位数) | select round(gpa,1) from user_profile<br/>-- gpa保留1位小数  |
+| MAX(col_name)            | select max(gpa) from user_profile<br/>-- 查询gpa最大的记录   |
+| AVG(col_name)            | select avg(gpa) from user_profile<br/>-- 求出所有用户的平均gpa |
+| SUM(col_name)            | select sum(gpa) from user_profile<br/>-- 求出所有用户的gpa总和 |
+
+
+
+
+
+## 问题篇
+
+1. **按角色分组算出每个角色按有办公室和没办公室的统计人数(列出角色，数量，有无办公室,注意一个角色如果部分有办公室，部分没有需分开统计）**
+
+   【题目链接：http://xuesql.cn/lesson/select_queries_with_aggregates_pt_2】
+
+![image-20220120142522481](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220120142522481.png)
+
+- 思路：这道题一开始写的时候想的是按角色分组后然后通过筛选出是否有办公室，但是再回过头看题目会发现题目要求是说对角色分组后，分开统计有无办公室的人数，所以貌似用where或者having得不到结果（网上有个使用到where的语句，不过没怎么看懂，下面贴出解法）
+
+- 预期结果：
+
+  | role     | count | bn   |
+  | -------- | ----- | ---- |
+  | Engineer | 5     | 1    |
+  | Engineer | 1     | 0    |
+  | Artist   | 5     | 1    |
+  | Artist   | 5     | 0    |
+  | Manager  | 6     | 1    |
+
+- 自己的解法：
+
+  ?> 感觉关键其实就只是在于group by的用法，group by是可以实现多次分组的，先按role分组，然后再从各role里按building is null分组。
+
+  ```sql
+  select role,count(*),(building is not null) as bn 
+  from employees
+  group by role,(building is not null)
+  ```
+
+- 网上解法（链接：https://blog.csdn.net/qq_36848833/article/details/104327930）：
+
+  ```sql
+  SELEct
+  Role
+  ,case when building is null then “1”
+  else “0” end as 有无办公室
+  ,count(Name)
+  FROM employees where 1 group by role,有无办公室
+  ```
+
+2. **SQL21** **浙江大学用户题目回答情况**
+
+   【题目链接：[牛客基础SQL21](https://www.nowcoder.com/practice/55f3d94c3f4d47b69833b335867c06c1?tpId=199&tags=&title=&difficulty=0&judgeStatus=0&rp=0)】
+
+- 思路：题目本身不难，先表连接，然后再筛洗就可以得到结果。但是，从讨论中看到另外一种解法，是在where中使用到了device_id相等的条件。不过主要还是不怎么理解f**rom两个表后得到的是什么样的一个临时表**。
+- **补充：**<font color="red" >select * from table_A,table_B; 其实就是对table_A和table_B进行内连接</font>
+- 自己的解法：
+
+```sql
+select question_practice_detail.device_id as device_id,question_id,result from question_practice_detail left join 
+user_profile on question_practice_detail.device_id = user_profile.device_id
+where university like "浙江大学"
+order by question_id asc;
+```
+
+- 讨论区解法：
+
+```sql
+SELECT u.device_id,q.question_id,q.result
+from question_practice_detail q,user_profile u
+where university = '浙江大学'and q.device_id=u.device_id
+```
+
+
+
+
 
