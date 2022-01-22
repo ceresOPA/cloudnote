@@ -6,7 +6,21 @@
 
 ?> 之后笔记写多了后，应该会在这下面加一些帮助导航吧，目前仅作个人笔记堆积处，要是以后自己笔记有机会帮助到别人那就再好不过了
 
-学习网站：
+## 学习网站
 
 - [git学习](https://learngitbranching.js.org/?locale=zh_CN) 
 - [SQL学习](http://xuesql.cn/)
+
+## 已更新笔记
+
+<div style="display:flex;justify-content:space-around;">
+    <div style="background-color:#42B983;padding:1.2rem 2rem;border-radius:1rem;">
+        <a href="/#/data-analysis/sql" style="color:#fff">SQL学习笔记</a>
+    </div>
+	<div style="color:#fff;background-color:#42B983;padding:1.2rem 2rem;border-radius:1rem;">
+    	<a href="/#/data-analysis/database" style="color:#fff">数据库面试/复试</a>
+    </div>
+    <div style="color:#fff;background-color:#42B983;padding:1.2rem 2rem;border-radius:1rem;">
+        <a href="/#/normal-note/2022-1-21" style="color:#fff">网站搭建</a>
+    </div>
+</div>

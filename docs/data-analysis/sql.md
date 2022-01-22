@@ -29,7 +29,7 @@ FROM mytable
 
 !> 这里补充一下关于执行顺序的问题，因为在牛客刷SQL中发现group by中竟然可以使用列的别名，然后看到讨论区给出的理由是：**因为MySQL对查询做了增强没有严格遵循SQL的执行顺序，where后面不能用select中的别名，但是group by ，order by都是可以的，Oracle数据库严格遵循了SQL执行顺序在Oracle里group by是不能引用select里的别名的。**
 
-## 基础篇
+## 入门篇
 
 ### SQL条件查询
 
@@ -186,6 +186,62 @@ having role like "Engineer"
 ```
 
 
+
+## 基础篇
+
+### 表的创建
+
+#### 1. 表创建
+
+#### 2. 表复制
+
+```sql
+create table data_archieved as
+select * from data;
+```
+
+
+
+### 插入数据
+
+#### 1. 单行插入
+
+```sql
+/**
+insert into table(可选字段[如果没有则按照表的默认顺序])
+values ();
+**/
+insert into users(username,account,password)
+values ('le','123456','123456')
+
+-- 默认按表顺序，如表结构字段的顺序为 id(key，自增)，username , account , password
+insert into users
+values (default,'le','123456','123456') -- 这里id设置为default，就是默认值，id自增
+```
+
+#### 2. 多行插入
+
+```sql
+-- 假设表字段为  id(key，自增)，username , account , password，comment
+insert into users
+values (default,'le','123456','123456',null),
+	   (default,'le1','1234567','1234567','comment');
+```
+
+#### 4.表的复制
+
+- 将一张表中的内容插入到另一张已知表中，和普通的插入类似，可以在表后面加()选定字段，也可以按照默认的
+
+```sql
+-- 第一种
+insert into data_archived
+select * from data
+-- 第二种
+insert into data_archived(uid,account,login_date)
+select uid,account,login_date from data
+```
+
+- 也可以在创建的时候复制一张表，具体见上方[表的创建中的表复制](###表的创建)
 
 ## 进阶篇
 
