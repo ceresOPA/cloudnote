@@ -1,3 +1,5 @@
+
+
 # SQL
 
 > 学习资源：[自学SQL网](http://xuesql.cn/)
@@ -193,11 +195,129 @@ having role like "Engineer"
 
 #### 1. 表创建
 
+```sql
+create table if not exists user_info_vip(
+    id int(11) not null primary key auto_increment comment "自增ID",
+    uid int(11) not null unique comment "用户ID",
+    nick_name varchar(64) comment "昵称",
+    achievement int(11) default 0 comment "成就值",
+    level int(11) comment "用户等级",
+    job varchar(32) comment "职业方向",
+    register_time datetime default CURRENT_TIMESTAMP comment "注册时间"
+);
+```
+
 #### 2. 表复制
 
 ```sql
 create table data_archieved as
 select * from data;
+```
+
+#### 3. SQL中创建相同表的as与like的区别
+
+【参考来源：https://blog.csdn.net/weixin_45691780/article/details/106885688】
+
+- 语句：
+
+  - ```sql
+    create table users_record as select * from users; --- as创建相同表
+    ```
+
+  - ```sql
+    create table users_record like users; --- like创建相同表
+    ```
+
+- 用途：
+  - as：用来创建相同表结构，并复制原数据，可以选择字段
+  - like：用来创建完整表结构**和索引**，没有数据
+- 区别：
+  - as：创建出来的新表缺少索引，仅保留表结构
+  - like：创建的新表包含完整的表结构和索引
+- 补充：MySQL中支持as和like，Oracle SQL中只支持as
+
+### 表结构的修改
+
+?> 下列语句中，其中有【】的表示可选
+
+#### 1. 添加列
+
+```sql
+alter table 表名
+add column 列名 列的类型
+【first|after 列】 -- 添加位置，放在第一个或者放在某个字段后面
+--例：
+alter table users
+add column avater_url varchar(50)
+after password
+--- 在password列后增加一列用于保存头像的url
+```
+
+#### 2. 删除列
+
+```sql
+alter table 表名
+drop column 列名
+--例:
+alter table users
+drop column comment
+--- 删除comment列
+```
+
+#### 3. 修改列
+
+##### ① 改变列名
+
+```sql
+alter table 表名
+change column 旧列名 新列名 类型
+--例:
+alter table users
+change column username nickname varchar(15)
+将username修改为nickname
+```
+
+##### ②修改列的类型或约束
+
+```sql
+alter table 表名
+modify column 列名 新类型
+【新约束】
+--例:
+alter table users
+modify column uid int(11)
+auto_increasement
+```
+
+##### ③调整列的位置
+
+```sql
+alter table 表名
+modify column 列名 类型
+first|after 列名
+--例:
+alter table users
+modify column avater_url varchar(50)
+first
+--- 把avatar_url字段放在首位
+```
+
+
+
+?> 其实我还挺不能理解的，为什么每次都要带上类型？即使在不需要修改列的类型的时候也要带上，就有点疑惑。
+
+### 表的删除
+
+#### 1. 删除某一个表
+
+```sql
+drop table if exists table_A;
+```
+
+#### 2. 同时删除多表
+
+```sql
+drop table if exists table_A,table_B,table_C;
 ```
 
 
@@ -228,6 +348,27 @@ values (default,'le','123456','123456',null),
 	   (default,'le1','1234567','1234567','comment');
 ```
 
+#### 3. replace插入
+
+```sql
+/**REPLACE INTO 跟 INSERT 功能类似
+不同点在于：REPLACE INTO 首先尝试插入数据到表中,
+如果发现表中已经有此行数据（根据主键或者唯一索引判断）则先删除此行数据，
+然后插入新的数据;否则，直接插入新数据。
+要注意的是：插入数据的表必须有主键或者是唯一索引！
+否则的话，REPLACE INTO 会直接插入数据，这将导致表中出现重复的数据。
+**/
+
+REPLACE INTO examination_info(exam_id,
+                              tag,
+                              difficulty,
+                              duration,
+                              release_time)
+VALUES(9003,'SQL','hard',90,'2021-01-01 00:00:00');
+```
+
+摘抄自[牛客讨论区](https://www.nowcoder.com/practice/978bcee6530a430fb0be716423d84082?tpId=240&tqId=2223556&ru=/exam/oj&qru=/ta/sql-advanced/question-ranking&sourceUrl=%2Fexam%2Foj%3Ftab%3DSQL%25E7%25AF%2587%26topicId%3D240)
+
 #### 4.表的复制
 
 - 将一张表中的内容插入到另一张已知表中，和普通的插入类似，可以在表后面加()选定字段，也可以按照默认的
@@ -242,6 +383,51 @@ select uid,account,login_date from data
 ```
 
 - 也可以在创建的时候复制一张表，具体见上方[表的创建中的表复制](###表的创建)
+
+
+
+### 更新数据
+
+#### 1.更新(update table)
+
+```sql
+update users
+set username = 'le' , comment = '123456'
+where user_id = 1 --- 查询中where能用的update中的也可以用，比如 user_id in (1,2,3,4,5)
+```
+
+!> 注意：① update后面没有from；② set在where前面！！！！！
+
+
+
+### 删除数据
+
+#### 1. 删除记录(delete)
+
+```sql
+-- 和select类似，有from
+delete from exam_record   
+where submit_time is null or minute(timediff(submit_time,start_time))<5 
+order by start_time
+limit 3;
+-- where语句的使用也与select相似
+```
+
+#### 2. 删除所有记录并重置表结构，让主键重新从0递增(truncate)
+
+```sql
+truncate table exam_record
+```
+
+#### 3. drop、delete和truncate的区别
+
+1.DROP TABLE　清除数据并且销毁表，是一种数据库定义语言(DDL Data Definition Language), 执行后不能撤销，被删除表格的关系，索引，权限等等都会被永久删除。
+
+2.TRUNCATE TABLE　只清除数据，保留表结构，列，权限，索引，视图，关系等等，相当于清零数据，是一种数据库定义语言(DDL Data Definition Language)，执行后不能撤销。
+
+3.DELETE FROM TABLE　删除（符合某些条件的）数据，是一种数据操纵语言(DML Data Manipulation Language)，执行后可以撤销。
+
+运行速度一般DROP最快，DELETE最慢，但是DELETE最安全。
 
 ## 进阶篇
 
@@ -311,20 +497,19 @@ group by university,difficult_level
 | CONCAT(连接多个字符串)                               | concat(str1,str2,str3)                     |
 | substring_index(str,delim,count)                     | str:要处理的字符串 delim:分隔符 count:计数 |
 
+#### 日期函数 
 
-
-#### 日期函数
-
-| 函数                                        | 作用                          |
-| ------------------------------------------- | ----------------------------- |
-| NOW()                                       | 返回类似：2022-01-21 16:40:24 |
-| CURDATE()                                   | 返回类似：2022-01-21          |
-| CURTIME()                                   | 返回类似：16:40:24            |
-| YEAR(NOW())                                 | 返回类似：2022                |
-| MONTH(NOW())                                | 返回类似：1                   |
-| 同类的还有DAY()、HOUR()、MINUTE()、SECOND() | 天、时、分、秒                |
-
-
+| 函数                                        | 作用                                               |
+| ------------------------------------------- | -------------------------------------------------- |
+| NOW()                                       | 返回类似：2022-01-21 16:40:24                      |
+| CURDATE()                                   | 返回类似：2022-01-21                               |
+| CURTIME()                                   | 返回类似：16:40:24                                 |
+| YEAR(NOW())                                 | 返回类似：2022                                     |
+| MONTH(NOW())                                | 返回类似：1                                        |
+| 同类的还有DAY()、HOUR()、MINUTE()、SECOND() | 天、时、分、秒                                     |
+| DATE_ADD('2022-01-02',interval 1 day)       | 增加时间 后面可以是interval 1 month/ 2 hour 之类的 |
+| DATEDIFF(end_date,start_date)               | 日期差，不会显示时分秒                             |
+| TIMEDIFF(end_time,start_time)               | 时间差，显示时分秒                                 |
 
 #### 特殊函数
 
@@ -383,6 +568,65 @@ select device_id,gpa,age from user_profile
 order by gpa desc,age desc;
 -- 这里分别将两个设置为降序，如果不设置，则默认是升序asc
 ```
+
+
+
+### 索引
+
+!> 索引的目的就是为了能够加快查询，因此索引是要基于查询创建的，而不应该随意地去创建索引，否则会导致资源的浪费与消耗的白白增加。<br />一般记录比较少的表是没有必要创建索引的，全局查询是可以的。创建索引会增加数据库的大小，而且在对表进行增加、删除、修改的时候都需要更新索引，因此索引的选择一定要合适，否则达不到提高性能的效果。<br/>注：mysql采用innodb数据库引擎下，会默认将主键创建为聚类索引(cluster index)，且聚类索引只能有一个。
+
+#### 1. 索引的创建
+
+##### 方法一(create)
+
+```sql
+-- 普通索引
+create index idx_uid on users(uid)
+-- 唯一索引
+create unique index unq_idx_uid on users(uid)
+-- 全文索引(全文索引可以类比搜索引擎搜索内容，后面具体讲)
+create fulltext index full_idx_passage_abstract on blogs(passage,abstract)
+```
+
+##### 方法二(alter)
+
+```sql
+-- 普通索引
+alter table users
+add index idx_uid(uid);
+-- 唯一索引
+alter table users
+add unique index unq_idx_uid(uid);
+-- 全文索引
+alter table blogs
+add fulltext index full_idx_passage_abstract(passage,absract);
+```
+
+##### 关于全文索引的补充
+
+参考：https://www.bilibili.com/video/BV1UE41147KC?p=140&spm_id_from=pageDriver
+
+全文索引一般适用于比较长的字段，如文章内容，需要查询与搜索字符串匹配的文章。例如想要搜索 “python 数据库连接"，那么我们期望的肯定不是说要完全有连着的这样的一个字符串，而是说要找到有python和字符串连接这样的内容的文章，就类似百度搜索一样，全文搜索就起着类似的作用。
+
+```sql
+-- 创建全文搜索(从文章和摘要中找到想要的内容，所以为文章和摘要字段设置全文索引)
+create fulltext index full_idx_passage_abstract(passage,abstract)
+
+-- 字符串匹配(默认模式)
+select *,match(passage,abstract) against('python 数据库连接') as score from blogs -- 可以查询这个表达式，会返回结果的相关性
+where match(passage,abstract) against('python 数据库连接') -- 注意：这里必须要把所有的全文索引字段写上，否则会报错
+
+-- 字符串匹配(布尔模式)
+select * from blogs
+where match(passage,abstract) against('python 数据库连接' in boolean mode) -- 表示使用了布尔模式
+/**
+在bool模式下，可以通过 against('+python -数据库连接' in boolean mode) 表示必须要有python，必须排除数据库连接
+against('python 数据库连接 -java' in boolean mode) 表示有python或者数据库连接，不能有java
+against('"python 数据库连接"' in boolean mode) 单引号里面加双引号，表示要完全匹配这个字符串，类似where中的 = 
+**/
+```
+
+
 
 
 

@@ -2,4 +2,5 @@
 
 - [SQL](/data-analysis/sql)
 - [数据库面试/复试](/data-analysis/database)
+- [概率论与数理统计](/data-analysis/probability-statistics)
 
