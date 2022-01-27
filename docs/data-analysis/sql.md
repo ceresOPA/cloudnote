@@ -451,6 +451,8 @@ select device_id,gender,age,gpa from user_profile where university like "山东�
 select device_id,gender,age,gpa from user_profile where gender like "male";
 ```
 
+
+
 ### 多表的连接
 
 多表的连接，其实与两个表的连接是类似的，只需在后面再join就可以了
@@ -484,32 +486,37 @@ group by university,difficult_level
 
 #### 字符函数
 
-| 函数                                                 | 作用                                       |
-| ---------------------------------------------------- | ------------------------------------------ |
-| LENGTH()                                             | 返回字符串的长度                           |
-| UPPER() / LOWER()                                    | 全部大写或小写                             |
-| LTRIM() / RTRIM() / TRIM()                           | 去除左空格/右空格/全部空格                 |
-| LEFT(“string”,左侧多少个字符)                        | left("string",3)<br />--- 输出 str         |
-| RIGHT("string",右侧多少个字符)                       | right("string",3)<br />--- 输出 ing        |
-| SUBSTRING("string",起始字符位置，结束字符位置[可选]) | substring("string",2,5)<br />--- 输出trin  |
-| LOCATE(子串,字符串)                                  | 返回子串第一次出现的位置                   |
-| REPLACE(字符串，内容，替换内容)                      |                                            |
-| CONCAT(连接多个字符串)                               | concat(str1,str2,str3)                     |
-| substring_index(str,delim,count)                     | str:要处理的字符串 delim:分隔符 count:计数 |
+| 函数                                                         | 作用                                                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| LENGTH()                                                     | 返回字符串的长度                                             |
+| UPPER() / LOWER()                                            | 全部大写或小写                                               |
+| LTRIM() / RTRIM() / TRIM()                                   | 去除左空格/右空格/全部空格                                   |
+| LEFT(“string”,左侧多少个字符)                                | left("string",3)<br />--- 输出 str                           |
+| RIGHT("string",右侧多少个字符)                               | right("string",3)<br />--- 输出 ing                          |
+| SUBSTRING("string",起始字符位置，结束字符位置[可选])         | substring("string",2,5)<br />--- 输出trin                    |
+| LOCATE(子串,字符串)                                          | 返回子串第一次出现的位置                                     |
+| REPLACE(字符串，内容，替换内容)                              |                                                              |
+| CONCAT(连接多个字符串)                                       | concat(str1,str2,str3)                                       |
+| GROUP_CONCAT([distinct] 连接的字符串 [order by 字段 asc/desc] [separator '分隔符']) | 在使用了group by后可以使用，可以将组内的一些字段各行的值组合起来。如: group_concat(distinct date,':',tag)，会返回{2021-01-02:SQL;2021-01-12:JAVA} |
+| substring_index(str,delim,count)                             | str:要处理的字符串 delim:分隔符 count:计数                   |
 
 #### 日期函数 
 
-| 函数                                        | 作用                                               |
-| ------------------------------------------- | -------------------------------------------------- |
-| NOW()                                       | 返回类似：2022-01-21 16:40:24                      |
-| CURDATE()                                   | 返回类似：2022-01-21                               |
-| CURTIME()                                   | 返回类似：16:40:24                                 |
-| YEAR(NOW())                                 | 返回类似：2022                                     |
-| MONTH(NOW())                                | 返回类似：1                                        |
-| 同类的还有DAY()、HOUR()、MINUTE()、SECOND() | 天、时、分、秒                                     |
-| DATE_ADD('2022-01-02',interval 1 day)       | 增加时间 后面可以是interval 1 month/ 2 hour 之类的 |
-| DATEDIFF(end_date,start_date)               | 日期差，不会显示时分秒                             |
-| TIMEDIFF(end_time,start_time)               | 时间差，显示时分秒                                 |
+| 函数                                        | 作用                                                   |
+| ------------------------------------------- | ------------------------------------------------------ |
+| NOW()                                       | 返回类似：2022-01-21 16:40:24                          |
+| CURDATE()                                   | 返回类似：2022-01-21                                   |
+| CURTIME()                                   | 返回类似：16:40:24                                     |
+| YEAR(NOW())                                 | 返回类似：2022                                         |
+| MONTH(NOW())                                | 返回类似：1                                            |
+| 同类的还有DAY()、HOUR()、MINUTE()、SECOND() | 天、时、分、秒                                         |
+| LAST_DAY('2021-01-27')                      | 获取本月最后一天，返回2021-01-31                       |
+| DATE_ADD('2022-01-02',interval 1 day)       | 增加时间 后面可以是interval 1 month/ 2 hour 之类的     |
+| DATEDIFF(end_date,start_date)               | 日期差，不会显示时分秒                                 |
+| TIMEDIFF(end_time,start_time)               | 时间差，显示时分秒                                     |
+| DATA_FORMAT(date,"%Y%m%d")                  | 格式化时间 DATA_FORMAT('2021-01-27',"%Y%m") 可得202101 |
+
+
 
 #### 特殊函数
 
@@ -571,6 +578,38 @@ order by gpa desc,age desc;
 
 
 
+### EXPLAIN分析SQL语句
+
+#### 1. 介绍
+
+【参考：https://www.cnblogs.com/deverz/p/11066043.html】
+
+#### 2. 简单使用
+
+```sql
+explain select * from user_profile where device_id = 2138
+-- 查询结果是对上面的语句进行的分析
+```
+
+![image-20220126101634317](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220126101634317.png)
+
+可以看到type=all，是使用了全表扫描，rows=7，表示扫描了7行。
+
+这里现在对device_id建立索引，再重新进行一次查询:
+
+```sql
+-- 创建索引
+create index idx_device_id on user_profile(device_id);
+-- 分析语句
+explain select * from user_profile where device_id = 2138;
+```
+
+![image-20220126102636851](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220126102636851.png)
+
+可以看到，在使用了device_id作为索引后，type变为了ref，表示采用了索引查询，rows=1，表示只扫描了一行，比之前要扫描7行，要很多。
+
+
+
 ### 索引
 
 !> 索引的目的就是为了能够加快查询，因此索引是要基于查询创建的，而不应该随意地去创建索引，否则会导致资源的浪费与消耗的白白增加。<br />一般记录比较少的表是没有必要创建索引的，全局查询是可以的。创建索引会增加数据库的大小，而且在对表进行增加、删除、修改的时候都需要更新索引，因此索引的选择一定要合适，否则达不到提高性能的效果。<br/>注：mysql采用innodb数据库引擎下，会默认将主键创建为聚类索引(cluster index)，且聚类索引只能有一个。
@@ -626,9 +665,18 @@ against('"python 数据库连接"' in boolean mode) 单引号里面加双引号�
 **/
 ```
 
+#### 2. 查看索引
 
+```sql
+-- 方法1
+show index from examination_info
+-- 方法2
+show indexes in examination_info
+```
 
+![image-20220126102417758](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220126102417758.png)
 
+其中，collation表示的是采用的排序方式 A即asc，D即desc，index_type为BTREE，这里应该表示的其实是说索引的数据结构为B+树。
 
 
 

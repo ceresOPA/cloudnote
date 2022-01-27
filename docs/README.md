@@ -11,7 +11,7 @@
 - [git学习](https://learngitbranching.js.org/?locale=zh_CN) 
 - [SQL学习](http://xuesql.cn/)
 
-## 已更新笔记
+## 快捷导航
 
 <div style="display:flex;justify-content:space-around;flex-wrap: wrap;">
     <div style="background-color:#42B983;padding:1.2em 2rem;border-radius:1em;margin:0.3rem;width:12rem;text-align:center;">
@@ -23,4 +23,8 @@
     <div style="color:#fff;background-color:#42B983;padding:1.2rem 2rem;border-radius:1rem;margin:0.3rem;width:12rem;text-align:center;">
         <a href="/#/normal-note/2022-1-21" style="color:#fff;">网站搭建</a>
     </div>
+        <div style="color:#fff;background-color:#42B983;padding:1.2rem 2rem;border-radius:1rem;margin:0.3rem;width:12rem;text-align:center;">
+        <a href="/#/git" style="color:#fff;">git笔记</a>
+    </div>
 </div>
+
