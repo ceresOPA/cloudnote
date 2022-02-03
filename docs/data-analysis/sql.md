@@ -1,5 +1,3 @@
-
-
 # SQL
 
 > 学习资源：[自学SQL网](http://xuesql.cn/)
@@ -502,19 +500,20 @@ group by university,difficult_level
 
 #### 日期函数 
 
-| 函数                                        | 作用                                                   |
-| ------------------------------------------- | ------------------------------------------------------ |
-| NOW()                                       | 返回类似：2022-01-21 16:40:24                          |
-| CURDATE()                                   | 返回类似：2022-01-21                                   |
-| CURTIME()                                   | 返回类似：16:40:24                                     |
-| YEAR(NOW())                                 | 返回类似：2022                                         |
-| MONTH(NOW())                                | 返回类似：1                                            |
-| 同类的还有DAY()、HOUR()、MINUTE()、SECOND() | 天、时、分、秒                                         |
-| LAST_DAY('2021-01-27')                      | 获取本月最后一天，返回2021-01-31                       |
-| DATE_ADD('2022-01-02',interval 1 day)       | 增加时间 后面可以是interval 1 month/ 2 hour 之类的     |
-| DATEDIFF(end_date,start_date)               | 日期差，不会显示时分秒                                 |
-| TIMEDIFF(end_time,start_time)               | 时间差，显示时分秒                                     |
-| DATA_FORMAT(date,"%Y%m%d")                  | 格式化时间 DATA_FORMAT('2021-01-27',"%Y%m") 可得202101 |
+| 函数                                                         | 作用                                                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| NOW()                                                        | 返回类似：2022-01-21 16:40:24                                |
+| CURDATE()                                                    | 返回类似：2022-01-21                                         |
+| CURTIME()                                                    | 返回类似：16:40:24                                           |
+| YEAR(NOW())                                                  | 返回类似：2022                                               |
+| MONTH(NOW())                                                 | 返回类似：1                                                  |
+| 同类的还有DAY()、HOUR()、MINUTE()、SECOND()                  | 天、时、分、秒                                               |
+| LAST_DAY('2021-01-27')                                       | 获取本月最后一天，返回2021-01-31                             |
+| DATE_ADD('2022-01-02',interval 1 day)                        | 增加时间 后面可以是interval 1 month/ 2 hour 之类的           |
+| DATEDIFF(end_date,start_date)                                | 日期差，不会显示时分秒                                       |
+| TIMEDIFF(end_time,start_time)                                | 时间差，显示时分秒                                           |
+| TIMESTAMPDIFF(day/minute/hour/second,start_time,end_time)<br/>--- 注意下<font color="red">这里是先start_time再end_time，和上面两个反着的</font> | select TIMESTAMPDIFF(HOUR, '2022-01-18 09:00:00', '2022-01-20 10:00:00');<br/>--- 相差49个小时 |
+| DATA_FORMAT(date,"%Y%m%d")                                   | 格式化时间 DATA_FORMAT('2021-01-27',"%Y%m") 可得202101       |
 
 
 
