@@ -101,3 +101,9 @@ git revert c1
 git config --global http.sslVerify "false"
 ```
 
+### ERROR: 'COMMIT' IS NOT POSSIBLE BECAUSE YOU HAVE UNMERGED FILES.
+
+解决方案：
+
+1. 把修改的文件add下，如：git add bidder_mod/src/common/dragon_bidder_data.cc
+2. git commit
