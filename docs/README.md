@@ -17,10 +17,10 @@
 
 <div style="display:flex;justify-content:space-around;flex-wrap: wrap;">
     <div style="background-color:#42B983;padding:1.2em 2rem;border-radius:1em;margin:0.3rem;width:12rem;text-align:center;">
-        <a href="/#/data-analysis/sql" style="color:#fff;">SQL学习笔记</a>
+        <a href="/#/data-science/sql" style="color:#fff;">SQL学习笔记</a>
     </div>
 	<div style="color:#fff;background-color:#42B983;padding:1.2rem 2rem;border-radius:1rem;margin:0.3rem;width:12rem;text-align:center;">
-    	<a href="/#/data-analysis/database" style="color:#fff;">数据库面试/复试</a>
+    	<a href="/#/data-science/database" style="color:#fff;">数据库面试/复试</a>
     </div>
     <div style="color:#fff;background-color:#42B983;padding:1.2rem 2rem;border-radius:1rem;margin:0.3rem;width:12rem;text-align:center;">
         <a href="/#/normal-note/2022-1-21" style="color:#fff;">网站搭建</a>
@@ -29,4 +29,5 @@
         <a href="/#/git" style="color:#fff;">git笔记</a>
     </div>
 </div>
+
 
