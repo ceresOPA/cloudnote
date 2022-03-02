@@ -323,3 +323,90 @@ for i in range(10):
 # 输出列表[0,2,4,6,8]
 ```
 
+## 算法
+
+### DFS（深度优先遍历）
+
+![dfs](https://gitee.com/y255413580/img/raw/master/noteimg/dfs.png)
+
+```python
+'''
+递归，相当于树的先序遍历
+'''
+def dfs(graph,start,path):
+    if(start not in path):
+        path.append(start)
+    for k in graph[start]:
+        if(k not in path):
+            dfs(graph,k,path)
+    return path
+
+if __name__ == "__main__":
+    graph = {
+        "a":["b","c","d"],
+        "b":["c","e"],
+        "c":["d"],
+        "d":["b","e"],
+        "e":[]
+    }
+    path = []
+    path = dfs(graph,"a",path)
+    for node in set(graph.keys())-set(path):
+        path = dfs(graph,node,path)
+
+    print(f"path:{path}")
+```
+
+由于Python中内置的dict、list以及set类型，所以实现起来非常方便，其中图的表示方式，个人认为是类似邻接表的，只是以前我们在c语言的实现中，还要自己使用指针，顶点用数组，然后边用结点表示，然后在Python里直接用了dict数据类型，十分方便。对于深度优先算法的思想，其实非常简单，只需要一直往下走就可以了，唯一需要**注意**的是，**从某些顶点出发并不一定能够经过所有的顶点，因此在无法进行遍历某些顶点时，需要重新选择起点！**这里借助了set集合，能够非常简洁地找到未能遍历的顶点。
+
+### BFS（广度优先算法）
+
+这里还是使用上面dfs的图
+
+```python
+'''
+队列，相当于树的层次遍历
+'''
+from utils import Queue
+
+def bfs(graph,start,path):
+    q = Queue()
+    if(start not in path):
+        path.append(start)
+        q.insert(start)
+    while(q.len()>0):
+        tmp = q.pop()
+        for e in graph[tmp]:
+            if(e not in path):
+                path.append(e)
+                q.insert(e)
+    return path
+
+if __name__=="__main__":
+    graph = {
+        "a":["b","c","d"],
+        "b":["c","e"],
+        "c":["d"],
+        "d":["b","e"],
+        "e":[]
+    }
+    path = bfs(graph,"c",[])
+    for node in set(graph.keys())-set(path):
+        path = bfs(graph,node,path)
+
+    print(f"path:{path}")
+```
+
+
+
+
+
+## 其他
+
+### Vscode无法在Anaconda环境的Python下执行代码
+
+解决方案：
+
+[Vscode中报错 CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'. - 简书 (jianshu.com)](https://www.jianshu.com/p/f5338df30470)
+
+![image-20220218191728455](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220218191728455.png)
