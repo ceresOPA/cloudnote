@@ -3,4 +3,5 @@
 # 不想当废物啊！
 
 [GitHub](https://github.com/ceresOPA/cloudnote)
-[开始阅读](#Blog)
+[开始阅读](/introduce)
+
