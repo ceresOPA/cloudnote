@@ -37,7 +37,7 @@ FROM mytable
 
 > 把不太熟悉的sql条件查询的语句记一下，之前除了=、!=这种常用的，很少用到下面的四种
 
-<img src="https://gitee.com/y255413580/img/raw/master/noteimg/image-20220118220927157.png" alt="image-20220118220927157" style="zoom: 50%;" />
+<img src="https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220118220927157.png" alt="image-20220118220927157" style="zoom:50%;" />
 
 ?> 这里注意下，BETWEEN...AND...，是包含两侧的值的，如
 
@@ -49,7 +49,7 @@ between 20 and 23 --是包括20和23的
 
 #### 2. 字符串相关筛选
 
-<img src="https://gitee.com/y255413580/img/raw/master/noteimg/image-20220118223539058.png" alt="image-20220118223539058" style="zoom:50%;" />
+<img src="https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220118223539058.png" alt="image-20220118223539058" style="zoom:50%;" />
 
 ?> 关于字符匹配中，可能存在的大小写问题，可以通过将字符串先全部转换为大写或小写，然后再去匹配：
 
@@ -114,7 +114,7 @@ limit 5 offset 5;
 #### 1. 内连接(inner join)
 
 - inner join，也可直接简写为join，相当于两表的交集（如A和B，则为A∩B）
-- 图示（A∩B）：![AB](https://gitee.com/y255413580/img/raw/master/noteimg/AB.png)
+- 图示（A∩B）：![AB](https://cdn.jsdelivr.net/gh/ceresopa/img/img/AB.png)
 
 - 作用：通过内连接得到的新表只要原来的表不存在null，则不会产生新的null。但显然，因为是交集，所以没有匹配的记录会直接被丢弃。
 - 语句：
@@ -129,8 +129,8 @@ on table_A.id = table_B.A_id
 - outer join，分为三种——left outer join(左外连接)、right outer join(右外连接)和full outer join(全连接)，都可以将outer简写掉，直接为left join,right join和full join。
 - 图示：
   - left join（A-B）  ：![A-B](https://gitee.com/y255413580/img/raw/master/noteimg/A-B.png)
-  - right join（B-A）：![B-A](https://gitee.com/y255413580/img/raw/master/noteimg/B-A.png)
-  - full join（A∪B）：![A∪B](https://gitee.com/y255413580/img/raw/master/noteimg/A%E2%88%AAB.png)
+  - right join（B-A）：![B-A](https://cdn.jsdelivr.net/gh/ceresopa/img/img/B-A.png)
+  - full join（A∪B）：![A∪B](https://cdn.jsdelivr.net/gh/ceresopa/img/img/A%E2%88%AAB.png)
 - 作用：这三种外连接，都有可能导致null的出现，对于左连接，会保留A表的所有记录，则会导致没有与B表对应的该条记录的B的字段值为null，另外两种类似。
 - 语句：
 
@@ -685,7 +685,7 @@ show indexes in examination_info
 
 【题目链接：http://xuesql.cn/lesson/select_queries_with_aggregates_pt_2】
 
-![image-20220120142522481](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220120142522481.png)
+![image-20220120142522481](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220120142522481.png)
 
 - 思路：这道题一开始写的时候想的是按角色分组后然后通过筛选出是否有办公室，但是再回过头看题目会发现题目要求是说对角色分组后，分开统计有无办公室的人数，所以貌似用where或者having得不到结果（网上有个使用到where的语句，不过没怎么看懂，下面贴出解法）
 

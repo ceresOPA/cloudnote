@@ -105,3 +105,61 @@
 - ![image-20220314101849305](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220314101849305.png)
 
 - 梯度强度、梯度方向与边的方向垂直
+
+### 不同的滤波算子
+
+![image-20220315154922274](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220315154922274.png)
+
+#### Prewitt算子
+
+- 用左右两侧多个像素点来判断是不是边
+
+#### Sobel算子
+
+- sobel算子相当于先做了一次高斯滤波**平滑化**，再进行**求导**
+
+#### Roberts算子
+
+- 计算的是斜着的像素差，$M_x$是135度的方向，$M_y$是45度的方向
+
+### 高斯一阶导
+
+![image-20220315160128095](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220315160128095.png)
+
+- 利用交换律，可以先让高斯核求导，这样就直接只需要让图像
+
+### 高斯偏导滤波器的参数设置
+
+![image-20220315160905690](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220315160905690.png)
+
+### Canny边缘检测
+
+- 求导初始边缘，求幅值
+- 设置阈值(门限)，幅值，把门限以下的去掉
+- ==前面的操作只是反应了这些像素点是边的可能性，是大还是小，并没有得到真正的边==
+- 非最大化信号抑制：比较那些粗的线，只保留最突兀的像素，这样才能得到是边
+- 双门限法：保留和强幅值相连的那些低的幅值保留
+- ![image-20220315163105331](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220315163105331.png)
+- ![image-20220315163351184](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220315163351184.png)
+
+## 拟合
+
+- 已经能够知道哪些像素点是边，但现在需要做到的是**要能够直接绘制出他的轮廓，要能够直接用函数将图像边缘拟合出来**
+
+![image-20220315164213467](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220315164213467.png)
+
+### 难点
+
+1. 噪声，应该在线上的像素点但因为噪声的原因而发生了偏离
+2. 其他不在目标物体上的线对要检测的目标的边缘线造成干扰
+3. 缺失，线某一部分断了，边缺失了一部分
+
+### 解决
+
+![image-20220315164642160](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220315164642160.png)
+
+### 鲁棒的最小二乘
+
+![image-20220328113542265](C:%5CUsers%5Cy2554%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20220328113542265.png)
+
+![image-20220328113805062](C:%5CUsers%5Cy2554%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20220328113805062.png)

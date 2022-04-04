@@ -27,6 +27,3 @@
         <a href="/#/git" style="color:#fff;">git笔记</a>
     </div>
 </div>
-
-
-

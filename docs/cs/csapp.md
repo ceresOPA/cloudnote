@@ -10,7 +10,7 @@
 
 一个c语言程序大致会通过下面的过程转换为一个可执行文件 
 
-![计算机处理c语言程序的过程](https://gitee.com/y255413580/img/raw/master/noteimg/test.drawio.png)
+![计算机处理c语言程序的过程](https://cdn.jsdelivr.net/gh/ceresopa/img/img/test.drawio.png)
 
 其中，**预处理**过程后的文件其实还是个c语言程序的文件，只是将以 “#” 开头的代码，像头文件都加入到一个文件中，仍然为文本文件，输出为hello.i。而**编译过程**则将c语言程序转换为汇编程序(hello.s)，之后，通过**汇编**将汇编程序转换为二进制的文件hello.o，此时即为二进制的机器指令，最后通过**链接**转换为可执行文件（注：Linux系统中是没有.exe表示可执行文件的，这里习惯性地写了windows）
 
