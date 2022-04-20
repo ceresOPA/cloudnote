@@ -6,7 +6,7 @@
 
 ### 1. 模式匹配
 
-![image-20220304231555646](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220304231555646.png)
+![image-20220304231555646](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220304231555646.png)
 
 - 输入*模板，根据匹配值net，值越大，可能性也越大
 
@@ -15,7 +15,7 @@
 
 ### 2. Sigmoid函数
 
-![image-20220304233134508](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220304233134508.png)
+![image-20220304233134508](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220304233134508.png)
 
 - 选更接近1的
 - 但当有两个数都很大的时候，都接近1，就没法判断。此时，就可以增加一个偏执项，可以认为是一个阈值，进行一个偏移。
@@ -26,25 +26,25 @@
 
 ### 4. 神经网络
 
-![image-20220304234632287](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220304234632287.png)
+![image-20220304234632287](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220304234632287.png)
 
 - 由多种神经元所构成的网络
 - 不同神经元的权值(包括偏置值)即对应着不同的数字模式
 
 ### 5. 神经网络的横向扩展——增加模式
 
-![image-20220304235133180](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220304235133180.png)
+![image-20220304235133180](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220304235133180.png)
 
 - 增加模式
 - 比如有各种长得不一样的3的写法，那就可以去给3增加各种长得不一样的模式，增加神经元。
 
 ### 6. 神经网络的纵向扩展——局部模式
 
-![image-20220304235321687](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220304235321687.png)
+![image-20220304235321687](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220304235321687.png)
 
 - 将原来的模式进行拆分，这样的话，相同的局部就可以共用了！
 
-![image-20220304235452277](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220304235452277.png)
+![image-20220304235452277](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220304235452277.png)
 
 - 越靠近输入的力度越小，越靠近输出力度越大
 - 输入为每个像素点，中间为匹配的局部范围内的像素点，不断往后，就可以组成一个全局的模式！
@@ -71,7 +71,7 @@
 
 ### 1. 神经元
 
-![image-20220305113044884](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220305113044884.png)
+![image-20220305113044884](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220305113044884.png)
 
 - **根据输入**，通过与权重的加权和后，再经过激活函数，**得到输出**
 
@@ -79,40 +79,40 @@
 
 #### 符号函数（sign函数）
 
-![image-20220305151455996](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220305151455996.png)
+![image-20220305151455996](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220305151455996.png)
 
 - 最早的激活函数，像单层感知机中就会用到
 
 #### Sigmoid函数
 
-![image-20220305151444350](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220305151444350.png)
+![image-20220305151444350](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220305151444350.png)
 
 - 输出0~1的范围
 - 连续的，可作为概率
 
 #### 双曲正切函数（tanh函数）
 
-![image-20220305151419727](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220305151419727.png)
+![image-20220305151419727](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220305151419727.png)
 
 - 和sigmoid函数很像，但是范围不同，范围为-1~1
 
 #### 线性整流函数（ReLu函数）
 
-![image-20220305151402533](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220305151402533.png)
+![image-20220305151402533](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220305151402533.png)
 
 - 整流，像二极管一样，单向通过，即整流
 - 经常用于图像处理的问题中
 
 #### Softmax函数
 
-![image-20220305151339396](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220305151339396.png)
+![image-20220305151339396](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220305151339396.png)
 
 - 一般只用于最后的输出层
 - 对输出层的各个神经元的输出的net(加权和)一起通过一个softmax函数，得到各个不同的概率。
 
 ### 3. 全连接网络
 
-![image-20220305113120109](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220305113120109.png)
+![image-20220305113120109](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220305113120109.png)
 
 - 按神经元的连接方式，两层的神经元，两两之间都有连接，每个连接都有权重。
 - 按信息走的方向来说，一层一层往前走，前一层的输出，作为下一层的输入，即**前馈网络**。
@@ -147,7 +147,7 @@
     - 小批量梯度下降法
       - 折中的方案
 - 反向传播算法（BP：Back Propagation）
-  - ![image-20220306151143290](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220306151143290.png)
+  - ![image-20220306151143290](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220306151143290.png)
   - 又称误差反向传播算法（最小化误差）
   - 给出一种计算偏导的方法
   - BP算法会因具体条件不同，算法会有差异，**总体思想一样**
@@ -169,7 +169,7 @@
 
 ### 全连接神经网络与卷积神经网络的比较
 
-![image-20220308231346742](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220308231346742.png)
+![image-20220308231346742](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220308231346742.png)
 
 - **从看到的特征数量上比较**，可以看到，全连接神经网络中，每个输出神经元都能够看到所有的输入神经元，也就是说能够看到所有的特征。而对于卷积神经网络，则采用的是局部连接，只能看到部分的输入，也就是只能看到局部的特征。
 
@@ -187,7 +187,7 @@
 
 #### 步长
 
-![image-20220312094332990](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220312094332990.png)
+![image-20220312094332990](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220312094332990.png)
 
 - 步长指的是卷积核每次移动的长度，步长为1，则卷积核在输入上每次只移动一行或一列，步长为2，则移动两行或两列，其他也都类似。
 
@@ -198,7 +198,7 @@
 
 ### 多通道输入时的卷积
 
-![image-20220309082227634](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220309082227634.png)
+![image-20220309082227634](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220309082227634.png)
 
 - 并不是说每个通道都单独进行卷积
 - 而是把卷积核看成一个立体，就比如原本是二维的平面，现在无论是卷积核还是输入都是三维的立体了，如6X6X3，说明有3个6X6的输入，3通道。
@@ -207,7 +207,7 @@
 
 ### 卷积核的大小
 
-![image-20220309083207770](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220309083207770.png)
+![image-20220309083207770](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220309083207770.png)
 
 - 小卷积核：细粒度特征
 - 大卷积核：大粒度特征
@@ -216,7 +216,7 @@
 
 ### 池化
 
-![image-20220309084320357](https://gitee.com/y255413580/img/raw/master/noteimg/image-20220309084320357.png)
+![image-20220309084320357](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220309084320357.png)
 
 - 一种降维的手段
 - 因为池化只是降维，要**保留特征**。因此，输入是多少个通道，输出就是多少个通道，不同通道的特征是不同的。
