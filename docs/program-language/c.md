@@ -1,5 +1,60 @@
 # C语言
 
+
+
+## 笨办法学C语言
+
+> 学习地址：https://wizardforcel.gitbooks.io/lcthw/content/ex1.html
+
+### 练习0：准备
+
+我采用了Windows的子系统Ubuntu，安装方法：
+
+步骤一、在**程序与功能**中启用 **适用于Linux的Windows子系统**
+
+步骤二、打开微软应用商店，搜索下载Ubuntu即可
+
+```shell
+$ sudo apt-get install build-essential
+```
+
+这里执行命令后，出现了 Failed to fetch 404 not found 的问题，解决方法为：
+
+步骤一、输入命令
+
+```shell
+$ sudo vi /etc/resolv.conf
+```
+
+步骤二、在resolv.conf中添加阿里DNS
+
+```
+nameserver 223.5.5.5
+nameserver 223.6.6.6
+```
+
+步骤三、保存后，执行完下面的命令，就可以重新安装自己的需要的包了
+
+```shell
+$ sudo apt-get update
+```
+
+### 练习1：启用编译器
+
+```
+make hello
+```
+
+
+
+```
+gcc hello.c -o hello
+```
+
+
+
+
+
 ## 问题篇
 
 ### 1. i++和++i哪个更快？

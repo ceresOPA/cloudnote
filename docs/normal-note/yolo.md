@@ -1,5 +1,7 @@
 # YoloV5
 
+> 学习资料：https://space.bilibili.com/237133596?spm_id_from=333.337.0.0   up主：薛定谔的AI
+
 ## 原理篇
 
 ### 一、数据增强
