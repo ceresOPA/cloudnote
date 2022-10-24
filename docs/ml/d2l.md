@@ -58,9 +58,5 @@ shape改变的只是样子，还是同一个对象
 
 亚导数
 
-
-
-![image-20220812223053792](C:%5CUsers%5Cy2554%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20220812223053792.png)
-
-
+![image-20220912101009987](https://cdn.jsdelivr.net/gh/ceresopa/img/img/image-20220912101009987.png)
 

@@ -30,7 +30,7 @@ token相当于就是一个用户凭证，因为不可能随便让别人上传文
 
 ![image-20220525155655516](https://cdn.jsdelivr.net/gh/ceresopa/img/imgimage-20220525155655516.png)
 
-![image-20220525155733963](C:\Users\YL\AppData\Roaming\Typora\typora-user-images\image-20220525155733963.png)
+
 
 ![image-20220525160231371](https://cdn.jsdelivr.net/gh/ceresopa/img/imgimage-20220525160231371.png)
 

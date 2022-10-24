@@ -1,5 +1,11 @@
 # 机器学习
 
+- [《动手学深度学习》学习笔记](/ml/d2l)
+
+
+
+
+
 ## 《白话机器学习的数学》笔记
 
 <font color="#212121" style="font-size:13px;">注：本部分均为notebook笔记，可以去我的github仓库下载.ipynb文件，本地打开学习。</font>

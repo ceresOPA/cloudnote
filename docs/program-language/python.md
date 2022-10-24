@@ -323,6 +323,254 @@ for i in range(10):
 # 输出列表[0,2,4,6,8]
 ```
 
+## 流畅的Python
+
+?> 《流畅的Python》笔记，简单记录一些内容，可能会比较零散
+
+### 第一章，数据模型
+
+**知识点1**：可以通过简单地实现\_\_getitem\_\_和\_\_len\_\_这两个特殊函数(magic function)来达到python中list、tuple这样的内置数据类型的类似操作（包括下标索引、切片、排序等操作）。
+
+```python
+# 非书中例子，这里用一个更简单的例子来说明如何通过__getitem__和__len__实现类似list的下标查找、切片、以及排序操作
+import collections
+
+# 通过namedtuple创建一个类（该类仅有属性，无函数）
+Human = collections.namedtuple("Human",["name","age"])
+
+class Humans:
+    def __init__(self):
+        h1 = Human("ZhangSan",17)
+        h2 = Human("LiSi",18)
+        h3 = Human("XiaoMing",12)
+
+        self.humans = [h1,h2,h3]
+    
+    def __len__(self):
+        return len(self.humans)
+    
+    def __getitem__(self,idx):
+        return self.humans[idx]
+
+
+
+h = Humans()
+
+print("下标索引",h[0])
+print("切片",h[:2]) 
+print("按年龄排序",sorted(h,key=lambda x:x.age))
+```
+
+输出结果：
+
+```shell
+下标索引 Human(name='ZhangSan', age=17)
+切片 [Human(name='ZhangSan', age=17), Human(name='LiSi', age=18)]
+按年龄排序 [Human(name='XiaoMing', age=12), Human(name='ZhangSan', age=17), Human(name='LiSi', age=18)]
+```
+
+同样的，使用for...in...进行迭代也是可以的
+
+```python
+for x in h:
+	print(x)
+
+for x in reversed(h):  # 包括内置函数reversed也是可以调用的
+	print("reversed",x)
+```
+
+**知识点2**：特殊方法的存在是为了被python解释器调用的，而不是自己显式地去调用
+
+- 如，不会使用my_object.\_\_len\_\_()，而是使用len(my_object)
+- 对于自定义类的对象，python会自动去调用\_\_len\_\_（前提是实现了该函数），而对于python内置的类型（list、str、bytearray），Cpython解释器则会直接返回PyVarObject中的ob_size属性（PyVarObject是），这会比调用\_\_len\_\_来说更快
+
+**知识点3**：特殊方法的存在，让我们能够让自定义的类的对象模拟内置类型的操作，从而让我们写出更具表达力的代码。
+
+```python
+# 自定义Vector类
+
+from math import hypot  # sqrt(x*x+y*y)
+
+class Vector:
+    def __init__(self,x=0,y=0):
+        self.x = x
+        self.y = y
+    
+    def __repr__(self):
+        return "Vector(%r,%r)"%(self.x,self.y)
+    
+    def __abs__(self):
+        return hypot(self.x,self.y)
+
+    def __add__(self,other):
+        x = self.x + other.x
+        y = self.y + other.y
+
+        return Vector(x,y)
+    
+    def __mul__(self,scaler):
+        x = self.x*scaler
+        y = self.y*scaler
+
+        return Vector(x,y)
+
+v1 = Vector(3,4)
+print(v1)
+print("向量的模",abs(v1))
+v2 = v1*3
+print("向量的拉伸",v2)
+print("向量相加",v1+v2)
+```
+
+输出的结果：
+
+```shell
+Vector(3,4)
+向量的模 5.0
+向量的拉伸 Vector(9,12)
+向量相加 Vector(12,16)
+```
+
+**知识点4**：\_\_str\_\_和\_\_repr\_\_方法的区别
+
+- str方法的触发时机是转换为字符串的时候，如print打印，或str.format时。
+- str方法主要用于用户的查看，具有明确的可解释性，而repr主要对于开发者，用于方便调试，当实现了repr后，对象的显示就不会是地址，而是repr的实现内容。
+- 当str方法没有实现时，则会去找repr方法，因此可以优先实现repr方法。
+
+
+
+###  第二章，序列构成的数组
+
+**知识点1**：深入理解Python中的不同序列类型，不但能让我们避免重复造轮子，而且他们的API还能帮助我们把自己定义的API设计得和原生的序列一样，或者是跟未来可能出现的序列类型保持兼容。
+
+
+
+**知识点2**：内置序列类型
+
+容器类型与扁平类型
+
+容器类型：list、tuple、collections.deque，容器类型存放的只是各个元素的引用，因此可以存放不同的类型的数据
+
+扁平类型：str、bytes、array.array、memoryview、bytearray，扁平类型是直接存放的字符、字节或数值，是连续存放的，因此更加紧凑，但是只能存放相同的数据类型的元素
+
+可变序列与不可变序列
+
+可变序列：list、collections.deque、array.array、bytearray、memoryview
+
+不可变序列：tuple、str、bytes
+
+
+
+**知识点3**：列表递推式(list comprehension)和生成器表达式(generator expression)
+
+- 列表递推式和生成器表达式在写法上的唯一区别就是前者用[]，后者用()
+- 二者的不同在于，如果要直接创建一个list，当然是直接列表递推式
+
+
+
+**知识点4**：虽然python让我们能够通过+和*，就能够实现序列的拼接，但是在对于容器序列的时候，在使用上也是要注意，像list中存放的是引用这个问题
+
+```python
+a = [['_']*3]*3
+"""
+打印a:
+[['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
+"""
+a[0][1] = 'X'
+"""
+打印a:
+[['_', 'X', '_'], ['_', 'X', '_'], ['_', 'X', '_']]
+"""
+```
+
+这里会发现明明只是修改了a\[0\]\[1\]的值，却把a\[1\]\[1\]和a\[2\]\[1\]也给修改了，这是因为其实这里面的三个子list，因为都是*3创建的，因此都是指向的同一个引用，也就是同一个对象，修改其中一个，当然都会变了。
+
+?> PS：这里我一开始还有点疑惑的地方是，不是说list里面是引用吗？那我的 \['_'\]*3 ，这个不也是相同的对象吗？确实是同一个，我用id(a\[0\]\[0\])、id(a\[0\]\[1\])，也都是验证过了是同一个地址，**但是**，如果我改变了如a\[0\]\[1\]，他并不是在原有的对象去修改，而是去创建了一个新的对象，再赋值回来了，所以这也就是为什么虽然id(a\[0\]\[0\])、id(a\[0\]\[1\])一开始是同一个地址，但对其中一个修改后另一个却没有发生变化的原因。至于为什么是创一个新的对象，而不是在原有的对象上修改，这又要回到list是可变序列，而str是不可变序列的问题上了。
+
+那如果想要正确的创建上面的二维数组，那应该怎么创建？为了简洁的话，可以通过列表推导式来创建，当然用for循环，每次创建一个新对象去添加也是可以的，关键其实就是在于是否是同一个对象的引用。
+
+```python
+a = [['_','_','_'] for i in range(3)]
+"""
+打印a:
+[['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
+"""
+a[0][1] = 'X'
+"""
+打印a：
+[['_', 'X', '_'], ['_', '_', '_'], ['_', '_', '_']]
+"""
+```
+
+**知识点5**：python中的省略号(...)和多维切片
+
+省略号
+
+- ... 其实是ellipsis这个类的唯一的实例Ellipsis的别名（ellipsis是类名，Ellipsis是对象名，这里类似bool是类，False和True是大写的）
+
+- 其实...是三个英文句号，并不是半个省略号
+
+多维切片
+
+- 我们通常使用的切片操作其实都是一维的，如a[2:5]，是拿取下标为2、3、4的这三个元素，但其实方括号[]中，也是可以支持使用逗号（,）的，如[2,3]这样的方式，如果想像这样使用，就需要自己重新实现\_\_getitem\_\_、\_\_setitem\_\_这样的特殊方法（让getitem能够去接收元组，这样就可以很自然地在[]中使用 ","）
+
+对于python中的省略号和多维切片，这样的句法上的特性都体现出了python的高度可扩展性，让我们在原有的基础上去实现自定义的类。不仅是避免了重复造轮子，而且能够让自定义的类和python的内置类实现类似的表达方式，很秒！
+
+上面两个句法的典型例子就是numpy了
+
+```python
+a = np.random.rand(2,3,5)
+# 打印后会发现a[1,...]和a[1,:,:]是等价的
+print(a[1,...])
+print(a[1,:,:])
+
+#下面的打印输出后，得到的是大小为(2,2,3)的三维数组，即多维切片
+print(a[:,1:,2:5])
+```
+
+
+
+**知识点6**：元组既可以被用作无字段名的记录，也可以被用作不可变的list
+
+- 对于元组在作为记录时，如("XiaoMing","HuNan",23)，这样的一条记录表示的就是(Name,Province,Age)。
+- 在元组中，我们通常还会用元组拆包（tuple package），
+
+
+
+```python
+t = (1,2,[3,5])
+t[2]+=[6,8]
+print(t)
+```
+
+
+
+### 第三章，字典和集合
+
+
+
+知识点1：UserDict是dict的python实现，用于用户自定义类的时候需要继承dict，则使用UserDict
+
+下面的链接说明了为什么明明有dict了，却还是存在UserDict，甚至包括UserString这些类的原因
+
+知乎链接：https://zhuanlan.zhihu.com/p/25915483
+
+(C语言实现的dict会忽视重载的特殊方法)
+
+UserDict并非继承自dict，dict在某些实现上会走一些捷径，会去忽视掉重写的特殊方法。UserDict在很多地方已经为我们实现好了，可以进行更加简洁的操作，而不用去重写过多的方法。
+
+
+
+
+
+>  鸭子类型：只要长得像鸭子，走的像鸭子，叫的像鸭子，那就可以认为是鸭子
+
+动态类型的一种风格，不用非是继承自同一类的子类，只要是有类似的方法或属性，就可以认为是同一类
+
+
+
+
+
 ## 算法
 
 ### DFS（深度优先遍历）
